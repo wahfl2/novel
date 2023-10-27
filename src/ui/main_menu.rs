@@ -1,5 +1,5 @@
 use bevy_egui::egui::{Area, Align2, Context};
-use bevy_egui::{egui, EguiContexts};
+use bevy_egui::egui;
 
 pub struct MainMenu {
     pub area: Area,
@@ -17,7 +17,7 @@ impl MainMenu {
             labels: button_labels.to_owned()
         }
     }
-
+    
     pub fn update(&self, ctx: &Context) {
         self.area.show(ctx, |ui| {
             for label in &self.labels {

@@ -1,8 +1,9 @@
 use bevy::prelude::*;
 use bevy_egui::EguiPlugin;
-use menu::main_menu::MainMenu;
+use ui::layer_stack::UiLayerStack;
 
-pub mod menu;
+pub mod ui;
+pub mod util;
 
 fn main() {
     App::new()
@@ -23,7 +24,8 @@ pub struct MainPlugin;
 
 impl Plugin for MainPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(DefaultPlugins)
+        app.init_resource::<UiLayerStack>()
+            .add_plugins(DefaultPlugins)
             .add_plugins(EguiPlugin)
             .add_state::<AppState>();
             // .add_systems(Update, menu);
