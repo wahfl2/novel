@@ -14,7 +14,7 @@ impl MainMenu {
     pub fn new(button_labels: impl IntoIterator<Item = impl Into<String>>) -> Self {
         let area = Area::new("main-menu")
             .movable(false)
-            .anchor(Align2::CENTER_CENTER, (0.0, 0.0));
+            .anchor(Align2::CENTER_BOTTOM, (0.0, -300.0));
 
         Self {
             area,
@@ -26,7 +26,7 @@ impl MainMenu {
         self.area.show(ctx, |ui| {
             for label in &self.labels {
                 ui.allocate_ui_with_layout(
-                    egui::vec2(100.0, 0.0), 
+                    egui::vec2(210.0, 0.0), 
                     egui::Layout::centered_and_justified(egui::Direction::LeftToRight), 
 
                     |ui| {
