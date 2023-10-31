@@ -1,3 +1,4 @@
+use background::BackgroundPlugin;
 use bevy::prelude::*;
 use bevy_egui::EguiPlugin;
 use ui::{layer_stack::UiLayerStack, ui_renderer, NovelUiPlugin};
@@ -27,8 +28,14 @@ impl Plugin for MainPlugin {
         app.add_plugins((
                 DefaultPlugins, 
                 EguiPlugin,
+                BackgroundPlugin,
                 NovelUiPlugin,
             ))
-            .add_state::<AppState>();
+            .add_state::<AppState>()
+            .add_systems(Startup, setup);
     }
+}
+
+pub fn setup(mut commands: Commands) {
+    commands.spawn(Camera2dBundle::default());
 }

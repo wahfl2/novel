@@ -1,5 +1,5 @@
 use bevy::{prelude::*, window::WindowResized};
-use bevy_egui::{EguiContexts, egui::{Button, FontId, self, Context}, EguiSettings};
+use bevy_egui::{EguiContexts, egui::{FontId, self}, EguiSettings};
 
 use crate::AppState;
 

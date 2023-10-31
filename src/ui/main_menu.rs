@@ -1,5 +1,5 @@
 use bevy::prelude::ResMut;
-use bevy_egui::egui::{Area, Align2, Context, RichText};
+use bevy_egui::egui::{Area, Align2, Context, Color32};
 use bevy_egui::egui;
 
 use super::layer::UiLayer;
@@ -30,7 +30,7 @@ impl MainMenu {
                     egui::Layout::centered_and_justified(egui::Direction::LeftToRight), 
 
                     |ui| {
-                        let button = egui::Button::new(label);
+                        let button = egui::Button::new(label).fill(Color32::from_white_alpha(50));
                         ui.add(button);
                     }
                 );
