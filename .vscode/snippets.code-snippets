@@ -1,0 +1,7 @@
+{
+	"Commands": {
+		"prefix": ["mut commands"],
+		"body": ["mut commands: Commands,"],
+		"description": "bevy commands"
+	}
+}
