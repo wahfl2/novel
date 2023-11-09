@@ -1,11 +1,12 @@
 use background::BackgroundPlugin;
 use bevy::prelude::*;
 use bevy_egui::EguiPlugin;
-use ui::{layer_stack::UiLayerStack, ui_renderer, NovelUiPlugin};
+use ui::NovelUiPlugin;
 
 pub mod ui;
 pub mod util;
 pub mod background;
+pub mod assets;
 
 fn main() {
     App::new()
