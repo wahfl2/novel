@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use crate::{assets::NovelAssets, InitialLoad};
+
 #[derive(Resource)]
 pub enum Background {
     Color(Color),
@@ -11,17 +13,17 @@ pub struct BackgroundComponent;
 
 impl Default for Background {
     fn default() -> Self {
-        Self::Color(Color::BLACK)
+        Self::Image("testbg.png".to_string())
     }
 }
 
 pub struct BackgroundPlugin;
 
 impl Plugin for BackgroundPlugin {
-    fn build(&self, app: &mut bevy::prelude::App) {
+    fn build(&self, app: &mut App) {
         app.init_resource::<Background>()
             .add_systems(Startup, init_background)
-            .add_systems(Update, background_manager);
+            .add_systems(Update, background_manager.run_if(in_state(InitialLoad::Done)));
     }
 }
 
@@ -29,9 +31,9 @@ pub fn init_background(
     mut commands: Commands,
 ) {
     commands.spawn((
+        BackgroundComponent,
         TransformBundle::default(),
         VisibilityBundle::default(),
-        BackgroundComponent,
     ));
 }
 
@@ -43,28 +45,30 @@ pub fn background_manager(
 
     mut clear_color: ResMut<ClearColor>,
     background_res: Res<Background>,
-    asset_server: Res<AssetServer>,
+    assets: Res<NovelAssets>,
 ) {
     if background_res.is_changed() {
         let background = q_background.single();
-        let vis = q_visibility.get_mut(background).unwrap();
+        let mut vis = q_visibility.get_mut(background).unwrap();
 
         match background_res.into_inner() {
             Background::Color(color) => {
                 clear_color.0 = *color;
-                set_visibility(vis, Visibility::Hidden);
+                vis.set_if_neq(Visibility::Hidden);
             },
-            Background::Image(path) => {
-                let img = asset_server.load::<Image, _>(path);
-                commands.entity(background).insert(img);
-                set_visibility(vis, Visibility::Visible);
-            },
-        }
-    }
+            Background::Image(name) => {
+                println!("{:?}", assets.images);
+                if let Some(img) = assets.images.get(name) {
+                    commands.entity(background).insert(img.to_owned());
+                } else {
+                    eprintln!(
+                        "Error: Image '{name}' could not be found. {}",
+                        "The background may be displayed incorrectly."
+                    );
+                }
 
-    fn set_visibility(mut vis: Mut<'_, Visibility>, new_visibility: Visibility) {
-        if vis.as_ref() == new_visibility {
-            *vis = new_visibility;
+                vis.set_if_neq(Visibility::Visible);
+            },
         }
     }
 }

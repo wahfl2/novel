@@ -1,3 +1,4 @@
+use assets::AssetsPlugin;
 use background::BackgroundPlugin;
 use bevy::prelude::*;
 use bevy_egui::EguiPlugin;
@@ -22,17 +23,27 @@ pub enum AppState {
     Cutscene,
 }
 
+#[derive(States, Clone, Hash, PartialEq, Eq, Debug, Default)]
+pub enum InitialLoad {
+    #[default]
+    Loading,
+    Cleaning,
+    Done,
+}
+
 pub struct MainPlugin;
 
 impl Plugin for MainPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins((
+        app.add_state::<AppState>()
+            .add_state::<InitialLoad>()
+            .add_plugins((
                 DefaultPlugins, 
                 EguiPlugin,
+                AssetsPlugin,
                 BackgroundPlugin,
                 NovelUiPlugin,
             ))
-            .add_state::<AppState>()
             .add_systems(Startup, setup);
     }
 }

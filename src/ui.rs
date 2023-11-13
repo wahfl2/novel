@@ -49,7 +49,7 @@ pub fn react_window_resize(
     mut resize_reader: EventReader<WindowResized>,
     mut egui_settings: ResMut<EguiSettings>,
 ) {
-    if let Some(window) = resize_reader.into_iter().last() {
+    if let Some(window) = resize_reader.read().last() {
         const TARGET_SIZE: f32 = 1080.0;
         let window_size = window.height;
 
