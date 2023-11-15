@@ -1,3 +1,4 @@
+use bevy::ecs::system::Commands;
 use bevy_egui::egui::Context;
 
 use super::main_menu::MainMenu;
@@ -13,9 +14,9 @@ impl UiLayer {
         }
     }
 
-    pub fn update(&self, ctx: &Context) {
+    pub fn update(&self, commands: &mut Commands, ctx: &Context) {
         match self {
-            UiLayer::MainMenu(m) => m.update(ctx),
+            UiLayer::MainMenu(m) => m.update(commands, ctx),
         }
     }
 }

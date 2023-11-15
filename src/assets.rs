@@ -22,8 +22,17 @@ impl Plugin for AssetsPlugin {
                 LoadingState::new(InitialLoad::Loading)
                     .continue_to_state(InitialLoad::Cleaning)
             )
-            .add_collection_to_loading_state::<_, NovelAssets>(InitialLoad::Loading);
+            .add_collection_to_loading_state::<_, NovelAssets>(InitialLoad::Loading)
+            .add_systems(OnEnter(InitialLoad::Cleaning), clean);
     }
+}
+
+pub fn clean(
+    mut assets: ResMut<NovelAssets>,
+    mut state: ResMut<NextState<InitialLoad>>,
+) {
+    assets.clean_keys();
+    state.set(InitialLoad::Done);
 }
 
 impl NovelAssets {

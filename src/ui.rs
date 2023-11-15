@@ -1,7 +1,7 @@
-use bevy::{prelude::*, window::WindowResized};
+use bevy::prelude::*;
 use bevy_egui::{EguiContexts, egui::{FontId, self}, EguiSettings};
 
-use crate::AppState;
+use crate::{AppState, ScaleFactor};
 
 use self::{layer_stack::UiLayerStack, main_menu::add_main_menu};
 
@@ -15,20 +15,21 @@ impl Plugin for NovelUiPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<UiLayerStack>()
             .add_systems(Startup, set_default_style)
-            .add_systems(First, react_window_resize)
+            .add_systems(PreUpdate, react_rescale)
             .add_systems(Update, ui_renderer)
             .add_systems(OnEnter(AppState::MainMenu), add_main_menu);
     }
 }
 
 pub fn ui_renderer(
+    mut commands: Commands,
     mut contexts: EguiContexts,
     layer_stack: Res<UiLayerStack>, 
 ) {
     let ctx = contexts.ctx_mut();
 
     for layer in layer_stack.last_opaque_up() {
-        layer.update(ctx)
+        layer.update(&mut commands, ctx);
     }
 }
 
@@ -45,14 +46,11 @@ pub fn set_default_style(
     });
 }
 
-pub fn react_window_resize(
-    mut resize_reader: EventReader<WindowResized>,
+pub fn react_rescale(
+    scale: Res<ScaleFactor>,
     mut egui_settings: ResMut<EguiSettings>,
 ) {
-    if let Some(window) = resize_reader.read().last() {
-        const TARGET_SIZE: f32 = 1080.0;
-        let window_size = window.height;
-
-        egui_settings.scale_factor = (window_size / TARGET_SIZE) as f64;
+    if scale.is_changed() {
+        egui_settings.scale_factor = **scale as f64;
     }
 }
